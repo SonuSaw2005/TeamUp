@@ -29,9 +29,31 @@ const Login = () => {
     }
   };
 
+  const handleQuickLogin = async (demoEmail, demoPassword) => {
+    setError('');
+    setLoading(true);
+    try {
+      await login(demoEmail, demoPassword);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(
+        err.response?.data?.message || 
+        'Invalid email or password. Please verify credentials.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-50 dark:bg-slate-900 px-4 transition-colors duration-300">
-      <div className="w-full max-w-md bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-800 p-8 rounded-2xl shadow-xl">
+    <div 
+      className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-cover bg-center bg-no-repeat px-4 py-12 relative overflow-hidden transition-colors duration-300"
+      style={{ backgroundImage: "url('/auth_bg.jpg')" }}
+    >
+      {/* Background Ambient Darkener Overlay */}
+      <div className="absolute inset-0 bg-primary-950/45 backdrop-blur-[3px] z-0"></div>
+
+      <div className="w-full max-w-md glass-premium p-8 rounded-[2rem] shadow-2xl z-10 border border-white/15 dark:border-white/5">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-black tracking-tight">Welcome Back</h2>
           <p className="text-sm text-gray-500 dark:text-slate-400 mt-2">
@@ -96,7 +118,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-primary-600/20 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+            className="w-full btn-3d-glow bg-primary-650 hover:bg-primary-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
           >
             <span>{loading ? 'Logging in...' : 'Sign In'}</span>
             {!loading && <ArrowRight className="w-4 h-4" />}
@@ -114,13 +136,37 @@ const Login = () => {
         </p>
 
         {/* Demo Credentials alert */}
-        <div className="mt-8 p-3 bg-primary-50 dark:bg-slate-700/50 border border-primary-100 dark:border-slate-600 rounded-lg text-xs">
-          <p className="font-bold text-primary-800 dark:text-primary-300">💡 Demo Accounts Available:</p>
-          <ul className="list-disc pl-4 mt-1 text-gray-600 dark:text-slate-300 space-y-0.5">
-            <li>Admin: <code className="font-mono">admin@teamup.com</code> / <code className="font-mono">password</code></li>
-            <li>Player: <code className="font-mono">rahul@teamup.com</code> / <code className="font-mono">password</code></li>
-            <li>Player 2: <code className="font-mono">amit@teamup.com</code> / <code className="font-mono">password</code></li>
-          </ul>
+        <div className="mt-8 p-4 bg-primary-50 dark:bg-slate-700/50 border border-primary-100 dark:border-slate-650 rounded-2xl text-xs shadow-sm">
+          <p className="font-bold text-primary-800 dark:text-primary-300 mb-2 flex items-center">
+            <span className="material-icons text-base mr-1">bolt</span>
+            One-Click Demo Login Personas:
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => handleQuickLogin('admin@teamup.com', 'password')}
+              className="py-2 px-3 bg-white dark:bg-slate-800 hover:bg-primary-50 dark:hover:bg-slate-700 hover:scale-[1.03] active:scale-[0.98] border border-primary-200 rounded-xl font-bold text-[10px] text-primary-750 transition-all flex items-center justify-center space-x-1 shadow-sm"
+            >
+              <span>🔑 Admin Console</span>
+            </button>
+            <button
+              onClick={() => handleQuickLogin('owner@teamup.com', 'password')}
+              className="py-2 px-3 bg-white dark:bg-slate-800 hover:bg-primary-50 dark:hover:bg-slate-700 hover:scale-[1.03] active:scale-[0.98] border border-primary-200 rounded-xl font-bold text-[10px] text-primary-750 transition-all flex items-center justify-center space-x-1 shadow-sm"
+            >
+              <span>🏟️ Ground Owner</span>
+            </button>
+            <button
+              onClick={() => handleQuickLogin('rahul@teamup.com', 'password')}
+              className="py-2 px-3 bg-white dark:bg-slate-800 hover:bg-primary-50 dark:hover:bg-slate-700 hover:scale-[1.03] active:scale-[0.98] border border-primary-200 rounded-xl font-bold text-[10px] text-primary-750 transition-all flex items-center justify-center space-x-1 shadow-sm"
+            >
+              <span>👤 Player (Rahul)</span>
+            </button>
+            <button
+              onClick={() => handleQuickLogin('amit@teamup.com', 'password')}
+              className="py-2 px-3 bg-white dark:bg-slate-800 hover:bg-primary-50 dark:hover:bg-slate-700 hover:scale-[1.03] active:scale-[0.98] border border-primary-200 rounded-xl font-bold text-[10px] text-primary-750 transition-all flex items-center justify-center space-x-1 shadow-sm"
+            >
+              <span>👤 Player (Amit)</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

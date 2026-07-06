@@ -72,3 +72,14 @@ INSERT INTO user_achievements (id, user_id, badge_name, description, unlocked_at
 VALUES (2, 3, 'Rookie', 'Joined the TeamUp platform!', CURRENT_TIMESTAMP);
 INSERT INTO user_achievements (id, user_id, badge_name, description, unlocked_at)
 VALUES (3, 4, 'Rookie', 'Joined the TeamUp platform!', CURRENT_TIMESTAMP);
+
+-- Reset H2 Auto-Increment Identity Sequences
+ALTER TABLE users ALTER COLUMN id RESTART WITH 6;
+ALTER TABLE grounds ALTER COLUMN id RESTART WITH 4;
+ALTER TABLE player_trust_scores ALTER COLUMN id RESTART WITH 4;
+ALTER TABLE user_sports ALTER COLUMN id RESTART WITH 5;
+ALTER TABLE bookings ALTER COLUMN id RESTART WITH 2;
+ALTER TABLE matches ALTER COLUMN id RESTART WITH 2;
+ALTER TABLE match_participants ALTER COLUMN id RESTART WITH 2;
+ALTER TABLE payments ALTER COLUMN id RESTART WITH 2;
+ALTER TABLE user_achievements ALTER COLUMN id RESTART WITH 4;

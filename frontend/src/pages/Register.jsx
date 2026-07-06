@@ -75,8 +75,14 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-50 dark:bg-slate-900 px-4 py-12 transition-colors duration-300">
-      <div className="w-full max-w-lg bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-800 p-8 rounded-2xl shadow-xl">
+    <div 
+      className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-cover bg-center bg-no-repeat px-4 py-12 relative overflow-hidden transition-colors duration-300"
+      style={{ backgroundImage: "url('/auth_bg.jpg')" }}
+    >
+      {/* Background Ambient Darkener Overlay */}
+      <div className="absolute inset-0 bg-primary-950/45 backdrop-blur-[3px] z-0"></div>
+
+      <div className="w-full max-w-lg glass-premium p-8 rounded-[2rem] shadow-2xl z-10 border border-white/15 dark:border-white/5">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-black tracking-tight">Create Account</h2>
           <p className="text-sm text-gray-500 dark:text-slate-400 mt-2">
@@ -233,7 +239,7 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-primary-600/20 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+              className="w-full btn-3d-glow bg-primary-650 hover:bg-primary-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
             >
               <span>{loading ? 'Creating Account...' : 'Sign Up Now'}</span>
               {!loading && <ArrowRight className="w-4 h-4" />}
