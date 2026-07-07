@@ -11,8 +11,8 @@ const Register = () => {
     password: '',
     age: '',
     locationName: '',
-    latitude: 12.9716, // Bangalore default
-    longitude: 77.5946,
+    latitude: 17.6890, // Satara, Maharashtra default
+    longitude: 73.9883,
     bio: '',
   });
 

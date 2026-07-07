@@ -24,7 +24,7 @@ const MapRecenter = ({ center }) => {
 };
 
 const MapView = ({ grounds = [], selectedGround = null, onSelectGround = null, height = "400px" }) => {
-  const defaultCenter = [12.9716, 77.5946]; // Bangalore default
+  const defaultCenter = [17.6890, 73.9883]; // Satara, Maharashtra default
   const mapCenter = selectedGround 
     ? [selectedGround.latitude, selectedGround.longitude] 
     : defaultCenter;

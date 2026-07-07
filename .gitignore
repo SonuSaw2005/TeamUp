@@ -1,0 +1,15 @@
+# Java and Maven outputs
+**/target/
+*.class
+**/log.txt
+*.log
+
+# Node & Frontend outputs
+**/node_modules/
+**/dist/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+.DS_Store

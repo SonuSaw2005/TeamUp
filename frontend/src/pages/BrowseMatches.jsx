@@ -26,6 +26,9 @@ const BrowseMatches = () => {
   // Trust Score filters for Captains to vet listings
   const [minAttendance, setMinAttendance] = useState('');
   const [maxCancellation, setMaxCancellation] = useState('');
+  
+  // AI Natural Language Search State
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Create Turf Booking & Match Modal
   const [showModal, setShowModal] = useState(false);
@@ -55,23 +58,25 @@ const BrowseMatches = () => {
   const fetchMatches = async () => {
     try {
       setLoading(true);
-      let url = '/api/matches?status=OPEN';
-      if (sportId) url += `&sportId=${sportId}`;
-      if (skillLevel) url += `&skillLevel=${skillLevel}`;
-
-      if (useLocationFilter && user.latitude && user.longitude) {
-        url += `&lat=${user.latitude}&lon=${user.longitude}&radius=${radius}`;
-      }
+      let url = searchQuery
+        ? `/api/ai/search?query=${encodeURIComponent(searchQuery)}`
+        : '/api/ai/recommendations/matches';
 
       const res = await API.get(url);
-      
-      // Perform local client-side trust filters
       let filtered = res.data;
+
+      // Filter by dropdown selections client-side for immediate responsiveness
+      if (sportId) {
+        filtered = filtered.filter(rec => rec.match.sport.id === parseInt(sportId, 10));
+      }
+      if (skillLevel) {
+        filtered = filtered.filter(rec => rec.match.skillLevelRequired === skillLevel);
+      }
       if (minAttendance) {
-        filtered = filtered.filter(m => (m.creator.attendancePercentage || 100) >= parseInt(minAttendance, 10));
+        filtered = filtered.filter(rec => (rec.match.creator.attendancePercentage || 100) >= parseInt(minAttendance, 10));
       }
       if (maxCancellation) {
-        filtered = filtered.filter(m => (m.creator.cancellationPercentage || 0) <= parseInt(maxCancellation, 10));
+        filtered = filtered.filter(rec => (rec.match.creator.cancellationPercentage || 0) <= parseInt(maxCancellation, 10));
       }
 
       setMatches(filtered);
@@ -255,6 +260,25 @@ const BrowseMatches = () => {
         </div>
       </div>
 
+      {/* AI Natural Language Search Bar */}
+      <div className="mb-8 glass-premium p-4 rounded-2xl border border-primary-200/20 shadow-sm flex items-center space-x-2 relative z-10">
+        <Search className="w-5 h-5 text-primary-500 flex-shrink-0" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') fetchMatches(); }}
+          placeholder="Search matches naturally with AI (e.g. 'football matches tomorrow within 5 km', 'beginner badminton')"
+          className="w-full bg-transparent border-none text-sm outline-none text-gray-800 dark:text-slate-100 placeholder-primary-400"
+        />
+        <button
+          onClick={fetchMatches}
+          className="btn-3d-glow py-2 px-5 bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs rounded-xl transition"
+        >
+          Search
+        </button>
+      </div>
+
       {success && (
         <div className="mb-6 p-4 bg-green-50 dark:bg-green-950/20 border border-green-200 text-green-700 rounded-xl flex items-center space-x-2 text-sm">
           <span className="material-icons text-green-500 text-base">check_circle</span>
@@ -279,13 +303,16 @@ const BrowseMatches = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {matches.map((match) => {
+          {matches.map((rec) => {
+            const match = rec.match || rec;
+            const confidence = rec.confidenceScore;
+            const explanation = rec.explanation;
             const urgent = isUrgent(match.dateTime);
             const privacy = match.booking?.bookingType || 'PUBLIC';
             return (
               <div
                 key={match.id}
-                className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-gray-150 dark:border-slate-850 shadow-sm flex flex-col justify-between hover:shadow-md transition active-hover"
+                className="card-3d bg-white dark:bg-slate-800 p-6 rounded-2xl border border-gray-150 dark:border-slate-850 shadow-sm flex flex-col justify-between hover:shadow-md transition active-hover"
               >
                 <div>
                   <div className="flex justify-between items-start mb-4">
@@ -318,6 +345,23 @@ const BrowseMatches = () => {
                       Captain Attendance: <b className="text-gray-800 dark:text-slate-200">{match.creator.attendancePercentage || 100}%</b>
                     </span>
                   </div>
+
+                  {/* AI Match Explanation */}
+                  {confidence && (
+                    <div className="mb-4 p-3 bg-primary-50 dark:bg-slate-900/60 rounded-xl border border-primary-200/10">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[9px] font-black uppercase text-primary-650 dark:text-primary-300">
+                          ⚡ AI Match Score
+                        </span>
+                        <span className="text-xs font-black text-primary-500">
+                          {confidence}%
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-gray-500 dark:text-slate-400 italic">
+                        "{explanation}"
+                      </p>
+                    </div>
+                  )}
 
                   <div className="space-y-2 border-t border-gray-100 dark:border-slate-700/50 pt-4 text-xs text-gray-600 dark:text-slate-300">
                     <div className="flex items-center">

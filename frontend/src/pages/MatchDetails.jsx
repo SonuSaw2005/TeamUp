@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import API from '../services/api';
 import ChatRoom from '../components/ChatRoom';
-import { Calendar, MapPin, Users, Award, ShieldAlert, AlertCircle, Trash2, CheckCircle2, MessageSquare, Check, X, Clock, HelpCircle, DollarSign } from 'lucide-react';
+import { Calendar, MapPin, Users, Award, ShieldAlert, AlertCircle, Trash2, CheckCircle2, MessageSquare, Check, X, Clock, HelpCircle, DollarSign, Compass, ShieldCheck } from 'lucide-react';
 
 const MatchDetails = () => {
   const { id } = useParams();
@@ -17,6 +17,11 @@ const MatchDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // AI states
+  const [weather, setWeather] = useState(null);
+  const [balancedTeams, setBalancedTeams] = useState(null);
+  const [playerRecommendations, setPlayerRecommendations] = useState([]);
 
   // Ratings overlay
   const [showRatingModal, setShowRatingModal] = useState(false);
@@ -42,6 +47,30 @@ const MatchDetails = () => {
       if (matchRes.data.booking) {
         const payRes = await API.get(`/api/bookings/${matchRes.data.booking.id}/payments`);
         setBookingPayments(payRes.data);
+      }
+
+      // Fetch AI forecast info
+      try {
+        const weatherRes = await API.get(`/api/ai/matches/${id}/weather`);
+        setWeather(weatherRes.data);
+      } catch (e) {
+        console.error(e);
+      }
+
+      // Fetch AI balanced teams split
+      try {
+        const balanceRes = await API.get(`/api/ai/matches/${id}/balance`);
+        setBalancedTeams(balanceRes.data);
+      } catch (e) {
+        console.error(e);
+      }
+
+      // Fetch AI teammate recruit recommendations
+      try {
+        const recPlayersRes = await API.get(`/api/ai/recommendations/players?matchId=${id}`);
+        setPlayerRecommendations(recPlayersRes.data);
+      } catch (e) {
+        console.error(e);
       }
     } catch (err) {
       setError('Failed to fetch match room detail.');
@@ -223,6 +252,21 @@ const MatchDetails = () => {
         </div>
       )}
 
+      {/* AI Weather Awareness Alert banner */}
+      {weather && weather.warningActive && (
+        <div className="mb-6 p-5 bg-amber-50 dark:bg-amber-950/20 border-l-4 border-amber-500 text-amber-900 dark:text-amber-300 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-start space-x-3">
+            <ShieldAlert className="w-6 h-6 text-amber-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="font-extrabold text-sm uppercase tracking-wide">AI Weather Forecast: {weather.condition} ({weather.temperatureCelsius}°C)</h4>
+              <p className="text-xs mt-1 text-amber-700 dark:text-amber-400">
+                {weather.recommendation}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main split details layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
@@ -344,6 +388,53 @@ const MatchDetails = () => {
             </div>
           </div>
 
+          {/* AI Balanced Teams split visualizer */}
+          {balancedTeams && (balancedTeams.teamA.length > 0 || balancedTeams.teamB.length > 0) && (
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-gray-150 dark:border-slate-800 shadow-sm">
+              <div className="flex items-center justify-between mb-4 border-b border-gray-100 dark:border-slate-700/50 pb-3">
+                <h3 className="font-black text-base flex items-center">
+                  <Award className="w-5 h-5 text-amber-500 mr-2" />
+                  AI Suggested Balanced Squads
+                </h3>
+                <span className="text-[10px] font-black text-gray-500 bg-gray-100 dark:bg-slate-900 py-1 px-2.5 rounded-full">
+                  Greedy Skill Balance
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Team Alpha */}
+                <div className="p-4 bg-indigo-55/10 dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="font-extrabold text-sm text-indigo-650 dark:text-indigo-400">Team Alpha</span>
+                    <span className="text-[10px] font-bold text-gray-500">Skill: {balancedTeams.averageSkillA}</span>
+                  </div>
+                  <div className="space-y-2">
+                    {balancedTeams.teamA.map((p) => (
+                      <div key={p.id} className="text-xs font-bold text-gray-700 dark:text-slate-300 bg-gray-50 dark:bg-slate-950 p-2 rounded-xl border border-gray-200/20">
+                        {p.name}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Team Beta */}
+                <div className="p-4 bg-emerald-55/10 dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="font-extrabold text-sm text-emerald-650 dark:text-emerald-400">Team Beta</span>
+                    <span className="text-[10px] font-bold text-gray-500">Skill: {balancedTeams.averageSkillB}</span>
+                  </div>
+                  <div className="space-y-2">
+                    {balancedTeams.teamB.map((p) => (
+                      <div key={p.id} className="text-xs font-bold text-gray-700 dark:text-slate-300 bg-gray-50 dark:bg-slate-950 p-2 rounded-xl border border-gray-200/20">
+                        {p.name}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Join requests queue for captain */}
           {isHost && pendingRequests.length > 0 && (
             <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-gray-150 dark:border-slate-800 shadow-sm">
@@ -397,6 +488,43 @@ const MatchDetails = () => {
               </p>
             )}
           </div>
+
+          {/* AI Recommended teammates recruitment panel */}
+          {isHost && playerRecommendations.length > 0 && (
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-gray-150 dark:border-slate-800 shadow-sm relative z-10">
+              <h3 className="font-black text-sm uppercase tracking-wider text-primary-500 mb-4 flex items-center">
+                <Compass className="w-5 h-5 mr-2 animate-spin-slow text-primary-500" />
+                AI Teammate Recruitment
+              </h3>
+              <p className="text-[10px] text-gray-400 mb-4">
+                We found matches matching this sport type, location, and skill level requirements:
+              </p>
+              <div className="space-y-3">
+                {playerRecommendations.map((rec) => (
+                  <div key={rec.player.id} className="p-3.5 bg-gray-50 dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 text-xs">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <span className="font-bold text-gray-800 dark:text-slate-200 block">{rec.player.name}</span>
+                        <span className="text-[9px] text-gray-400 font-bold">{rec.distanceInKm.toFixed(1)} km away</span>
+                      </div>
+                      <span className="bg-emerald-50 dark:bg-slate-950 border border-emerald-200/20 text-emerald-650 dark:text-emerald-450 text-[9px] font-black py-0.5 px-2 rounded-full">
+                        {rec.confidenceScore}% Match
+                      </span>
+                    </div>
+                    <p className="text-[9px] text-gray-550 dark:text-slate-450 italic mb-2">
+                      "{rec.explanation}"
+                    </p>
+                    <button
+                      onClick={() => alert(`Recruit invitation dispatched to ${rec.player.name}!`)}
+                      className="w-full py-1.5 bg-primary-600 hover:bg-primary-500 text-white font-bold text-[10px] rounded-lg transition"
+                    >
+                      Invite to Join
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
       </div>

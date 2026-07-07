@@ -8,33 +8,33 @@ INSERT INTO sports (id, name, icon_name) VALUES (5, 'Tennis', 'sports_tennis');
 -- Populate Users (Password is 'password' hashed using BCrypt)
 -- Admin User (Id: 1)
 INSERT INTO users (id, name, email, password, age, location_name, latitude, longitude, bio, role, is_verified, created_at)
-VALUES (1, 'Admin TeamUp', 'admin@teamup.com', '$2a$10$CwTycUXWue0Thq9StjUM0uTYryuhTElB427xT4K4S4Vp9.7pSefeq', 30, 'Indiranagar, Bangalore', 12.9784, 77.6408, 'System Administrator.', 'ADMIN', true, CURRENT_TIMESTAMP);
+VALUES (1, 'Admin TeamUp', 'admin@teamup.com', '$2a$10$CwTycUXWue0Thq9StjUM0uTYryuhTElB427xT4K4S4Vp9.7pSefeq', 30, 'Satara Center, Satara', 17.6890, 73.9883, 'System Administrator.', 'ADMIN', true, CURRENT_TIMESTAMP);
 
 -- Player 1 (Rahul) (Id: 2)
 INSERT INTO users (id, name, email, password, age, location_name, latitude, longitude, bio, role, is_verified, created_at)
-VALUES (2, 'Rahul Sharma', 'rahul@teamup.com', '$2a$10$CwTycUXWue0Thq9StjUM0uTYryuhTElB427xT4K4S4Vp9.7pSefeq', 24, 'Koramangala, Bangalore', 12.9352, 77.6245, 'Passionate footballer and cricket fan.', 'USER', true, CURRENT_TIMESTAMP);
+VALUES (2, 'Rahul Sharma', 'rahul@teamup.com', '$2a$10$CwTycUXWue0Thq9StjUM0uTYryuhTElB427xT4K4S4Vp9.7pSefeq', 24, 'Radhika Road, Satara', 17.6910, 73.9910, 'Passionate footballer and cricket fan.', 'USER', true, CURRENT_TIMESTAMP);
 
 -- Player 2 (Amit) (Id: 3)
 INSERT INTO users (id, name, email, password, age, location_name, latitude, longitude, bio, role, is_verified, created_at)
-VALUES (3, 'Amit Patel', 'amit@teamup.com', '$2a$10$CwTycUXWue0Thq9StjUM0uTYryuhTElB427xT4K4S4Vp9.7pSefeq', 28, 'HSR Layout, Bangalore', 12.9141, 77.6411, 'Weekend basketball player.', 'USER', true, CURRENT_TIMESTAMP);
+VALUES (3, 'Amit Patel', 'amit@teamup.com', '$2a$10$CwTycUXWue0Thq9StjUM0uTYryuhTElB427xT4K4S4Vp9.7pSefeq', 28, 'Karanje, Satara', 17.6780, 73.9820, 'Weekend basketball player.', 'USER', true, CURRENT_TIMESTAMP);
 
 -- Player 3 (Sneha) (Id: 4)
 INSERT INTO users (id, name, email, password, age, location_name, latitude, longitude, bio, role, is_verified, created_at)
-VALUES (4, 'Sneha Reddy', 'sneha@teamup.com', '$2a$10$CwTycUXWue0Thq9StjUM0uTYryuhTElB427xT4K4S4Vp9.7pSefeq', 22, 'Whitefield, Bangalore', 12.9698, 77.7499, 'Tennis enthusiast.', 'USER', true, CURRENT_TIMESTAMP);
+VALUES (4, 'Sneha Reddy', 'sneha@teamup.com', '$2a$10$CwTycUXWue0Thq9StjUM0uTYryuhTElB427xT4K4S4Vp9.7pSefeq', 22, 'Shahupuri, Satara', 17.6850, 73.9990, 'Tennis enthusiast.', 'USER', true, CURRENT_TIMESTAMP);
 
 -- Ground Owner (Turf Boss) (Id: 5)
 INSERT INTO users (id, name, email, password, age, location_name, latitude, longitude, bio, role, is_verified, created_at)
-VALUES (5, 'Turf Boss Owner', 'owner@teamup.com', '$2a$10$CwTycUXWue0Thq9StjUM0uTYryuhTElB427xT4K4S4Vp9.7pSefeq', 35, 'Sarjapur, Bangalore', 12.9038, 77.6853, 'Ground owner managing Play Arena and local turfs.', 'OWNER', true, CURRENT_TIMESTAMP);
+VALUES (5, 'Turf Boss Owner', 'owner@teamup.com', '$2a$10$CwTycUXWue0Thq9StjUM0uTYryuhTElB427xT4K4S4Vp9.7pSefeq', 35, 'Satara High School, Satara', 17.6930, 73.9850, 'Ground owner managing Play Arena and local turfs.', 'OWNER', true, CURRENT_TIMESTAMP);
 
 -- Populate Grounds with Owner mapping
 INSERT INTO grounds (id, name, address, latitude, longitude, sports_available, contact_number, owner_id, hourly_price, available_slots, cancellation_policy) 
-VALUES (1, 'Play Arena Sarjapur', 'Sarjapur Main Road, Bangalore', 12.9038, 77.6853, 'Football, Basketball, Badminton', '+91 9999999901', 5, 1500.0, '06:00-07:00,07:00-08:00,08:00-09:00,16:00-17:00,17:00-18:00,18:00-19:00,19:00-20:00,20:00-21:00', 'Cancel more than 6 hours before match for 100% refund.');
+VALUES (1, 'Play Arena Satara', 'Satara High School Road, Satara', 17.6930, 73.9850, 'Football, Basketball, Badminton', '+91 9999999901', 5, 1500.0, '06:00-07:00,07:00-08:00,08:00-09:00,16:00-17:00,17:00-18:00,18:00-19:00,19:00-20:00,20:00-21:00', 'Cancel more than 6 hours before match for 100% refund.');
 
 INSERT INTO grounds (id, name, address, latitude, longitude, sports_available, contact_number, owner_id, hourly_price, available_slots, cancellation_policy) 
-VALUES (2, 'Bangalore Football Turf', 'Kalyan Nagar, Bangalore', 13.0232, 77.6432, 'Football', '+91 9999999902', 5, 1200.0, '06:00-07:00,17:00-18:00,18:00-19:00,19:00-20:00,20:00-21:00,21:00-22:00', 'Cancel more than 6 hours before match for 100% refund.');
+VALUES (2, 'Satara Football Turf', 'Karanje Road, Satara', 17.6820, 73.9780, 'Football', '+91 9999999902', 5, 1200.0, '06:00-07:00,17:00-18:00,18:00-19:00,19:00-20:00,20:00-21:00,21:00-22:00', 'Cancel more than 6 hours before match for 100% refund.');
 
 INSERT INTO grounds (id, name, address, latitude, longitude, sports_available, contact_number, owner_id, hourly_price, available_slots, cancellation_policy) 
-VALUES (3, 'Decathlon Anubhuti Whitefield', 'Whitefield Main Road, Bangalore', 12.9698, 77.7499, 'Football, Basketball, Tennis', '+91 9999999903', 5, 1000.0, '06:00-07:00,07:00-08:00,08:00-09:00,16:00-17:00,17:00-18:00,18:00-19:00,19:00-20:00', 'Cancel more than 6 hours before match for 100% refund.');
+VALUES (3, 'Decathlon Satara', 'Shahupuri, Satara', 17.6850, 73.9990, 'Football, Basketball, Tennis', '+91 9999999903', 5, 1000.0, '06:00-07:00,07:00-08:00,08:00-09:00,16:00-17:00,17:00-18:00,18:00-19:00,19:00-20:00', 'Cancel more than 6 hours before match for 100% refund.');
 
 -- Populate Player Trust Scores
 INSERT INTO player_trust_scores (id, user_id, matches_played, attendance_percentage, cancellation_percentage, sportsmanship_rating, average_rating)
